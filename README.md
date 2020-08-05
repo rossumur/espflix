@@ -2,7 +2,7 @@
 
 ### Find yourself stuck indoors during a pandemic? Why not build an open source settop box and connect to the only microcontroller powered video streaming service?
 
-**ESPFLIX** is designed to run on the ESP32 within the Arduino IDE framework. See it in action on [Youtube](https://www.youtube.com/watch?v=qFRkfeuTUrU). Like the [ESP_8_BIT](https://rossumblog.com/2020/05/10/130/), the schematic is pretty simple:
+**ESPFLIX** is designed to run on the ESP32 within the Arduino IDE framework. Like the [ESP_8_BIT](https://rossumblog.com/2020/05/10/130/), the schematic is pretty simple:
 
 ```
     -----------
@@ -29,10 +29,10 @@ On first boot select a WiFi access point and enter a password. If you need to ch
 
 Once in the top level menu scroll left and right to select something to watch. When in playback **left** and **right** on the remote will fast forward / rewind. **up** and **down** will skip forward and back by 30 seconds. **menu** will save the position of the current content and return you to the selection screen.
 
-
 # New this month on EspFlix
 ![Posters of Lineup](img/lineup.jpg)
-Ok. So it is a slightly smaller collection than Netflix but still stuff that is funny/enjoyable/interesting. Big shout out to the brilliant Nina Paley for all her great work.
+
+Ok, so it is a slightly smaller collection than Netflix but still stuff that is funny/enjoyable/interesting. Big shout out to the brilliant Nina Paley for all her great work.
 
 
 # How It Works
@@ -45,7 +45,7 @@ While codecs have improved in the intervening decades the MPEG1 codec uses many 
 
 The standard MPEG1 resolution of 352x240 (NTSC) or 352x288 (PAL) seems like a good match for our ESP32 video output resolution. Because MPEG1 can encode differences between frames (predicted or "P" frames) you need 2 frame buffers at this resolution. MPEG1 normally also encodes differences between past and *future* frames (bidirectionally predicted or "B" frames) so that means 3 buffers.
 
-A quick bit of math on the size of these frame buffers (each encoded in YUV 4:1:1 color space) yields ```352 * 288 * 3 * 1.5 = 456192``` which much more memory than the ESP32 has to offer. So we need to make a few concessions. We can live without B frames: they improve overall coding performance but it is easy to create nice looking video without them. We can also reduce the vertical resolution: 1993 was still a 4:3 world, 352x192 is a fine resolution for the 2020s.
+A quick bit of math on the size of these frame buffers (each encoded in YUV 4:1:1 color space) yields ```352 * 288 * 3 * 1.5 = 456192``` which much more memory than the ESP32 has to offer. So we need to make a few concessions. We can live without B frames: they improve overall coding performance but it is easy to create nice looking video without them. We can also reduce the vertical resolution: 1993 was still a 4:3 world, 352x192 is a fine aspect ratio for the 2020s.
 
 Even though ```352 * 192 * 2 * 1.5 = 202752``` seems a lot more manageable getting a MPEG1 software codec be performant still has its challenges. You can't just ```malloc``` contiguous buffers of that size in one piece on an ESP32. They need to be broken up into strips and all the guts of the codec that does fiddly half-pixel motion compensation has to be adjusted according. Much of this memory needs to be allocated from a pool that can only be addressed 32 bits at a time, further complicating code that needs to run as past as possible. If the implementation of the MPEG1 decoder looks weird it is normally because it is trying to deal with aligned access and chunked allocation of the frame buffers.
 
@@ -55,7 +55,7 @@ SBC is a low-complexity subband codec specified by the Bluetooth Special Interes
 I originally wrote this implementation for a Cortex M0: it works fine on that tiny device with limited memory and no hardware divider. Its low complexity is handy given the SBC audio codec runs on core 1 of the ESP32 alongside the video NTSC/PAL encoding, the IP stack and the Delta-Sigma modulator.
 
 ### Delta-Sigma (ΔΣ; or Sigma-Delta, ΣΔ) Modulators
-I love Delta-Sigma modulators. Despite the vigorous debate over the [correct name ordinality](https://www.laphamsquarterly.org/rivalry-feud/crack) they are an versatile tool that can be used for both high performance [ADCs](https://hackaday.com/2016/07/07/tearing-into-delta-sigma-adcs-part-1/) and [DACs](https://en.wikipedia.org/wiki/Direct_Stream_Digital). A great introduction can be found at https://www.beis.de/Elektronik/DeltaSigma/DeltaSigma.html.
+I love Delta-Sigma modulators. Despite the vigorous debate over the [correct name ordinality](https://www.laphamsquarterly.org/rivalry-feud/crack) they are a versatile tool that can be used for both high performance [ADCs](https://hackaday.com/2016/07/07/tearing-into-delta-sigma-adcs-part-1/) and [DACs](https://en.wikipedia.org/wiki/Direct_Stream_Digital). A great introduction can be found at https://www.beis.de/Elektronik/DeltaSigma/DeltaSigma.html.
 
 The ESP32 has one built into I2S0. Sadly we are using I2S0 for video generation, so we will have to generate our signal in software. To turn a 48khz, 16 bit mono PCM stream into oversampled single bit stream we will have to choose a modulator that has nice noise characteristics but is fast enough to run on already busy microcontroller.
 
