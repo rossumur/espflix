@@ -94,3 +94,5 @@ The ESP32 is a great little device. Kind of amazing you can create a settop box 
 
 cheers,
 Rossum
+
+rossumblog.com
