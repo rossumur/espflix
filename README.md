@@ -1,7 +1,7 @@
 # ESPFLIX: A free video streaming service that runs on a ESP32
 
 ### Find yourself stuck indoors during a pandemic? Why not build an open source settop box and connect to the only microcontroller powered video streaming service?
-See it in action on [YouTube](https://youtu.be/oPL8Pj6ATrg).
+See it in action on [YouTube](https://youtu.be/oPL8Pj6ATrg). Source at [https://github.com/rossumur/espflix](https://github.com/rossumur/espflix).
 
 ![ESPFLIX](img/espflix.jpg)
 
@@ -29,6 +29,8 @@ See it in action on [YouTube](https://youtu.be/oPL8Pj6ATrg).
 You will also need an AppleTV remote control or similar. Lots of compatible remotes on ebay for a few dollars. It is pretty easy to adapt other remotes, see ```ir_input.h``` for details.
 
 On first boot select a WiFi access point and enter a password. If you need to change the access point at a later time hold the **menu** key during the splash screen to return to the access point selection screen.
+
+![Access Point Selection](img/pass.jpg)
 
 Once in the top level menu scroll left and right to select something to watch. When in playback **left** and **right** on the remote will fast forward / rewind. **up** and **down** will skip forward and back by 30 seconds. **menu** will save the position of the current content and return you to the selection screen.
 
